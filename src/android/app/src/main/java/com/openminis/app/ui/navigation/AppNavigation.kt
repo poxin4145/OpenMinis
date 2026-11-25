@@ -179,6 +179,8 @@ object Routes {
     const val SUB_AGENT_DETAIL = "sub_agent/{agentId}"
     /** [T-tools-granular-switches] Settings > Agent Runtime > Tools. */
     const val AGENT_TOOLS = "agent_tools"
+    /** [T-github-tools] Settings > Agent Runtime > GitHub. */
+    const val GITHUB = "github"
     /** [T-mcp-integration-android] MCP Integrations management screen. */
     const val MCP = "mcp"
     /** [T-soul-md] SOUL.md editor. */
@@ -660,6 +662,7 @@ fun AppNavigation(
                 onMemoryClick = { navController.safeNavigate(Routes.MEMORY) },
                 onAgentsClick = { navController.safeNavigate(Routes.AGENTS) },
                 onAgentToolsClick = { navController.safeNavigate(Routes.AGENT_TOOLS) },
+                onGitHubClick = { navController.safeNavigate(Routes.GITHUB) },
                 onMcpClick = { navController.safeNavigate(Routes.MCP) },
                 onSoulClick = { navController.safeNavigate(Routes.SOUL) },
                 onPermissionsClick = { navController.safeNavigate(Routes.PERMISSIONS) },
@@ -1389,11 +1392,7 @@ fun AppNavigation(
                 androidx.navigation.navArgument("sessionId") {
                     type = androidx.navigation.NavType.StringType
                     nullable = true
-                    defaultValue = null
-                },
-            ),
-        ) { backStackEntry ->
-            val context = androidx.compose.ui.platform.LocalContext.current
+                     val context = androidx.compose.ui.platform.LocalContext.current
             val initCommand = backStackEntry.arguments?.getString("initCommand")
             val sessionId = backStackEntry.arguments?.getString("sessionId")
             val session = remember { TerminalSession(context.applicationContext) }
@@ -1535,6 +1534,12 @@ fun AppNavigation(
 
         composable(Routes.AGENT_TOOLS) {
             com.openminis.app.ui.settings.AgentToolsSettingsScreen(
+                onBack = { navController.safePopBackStack() },
+            )
+        }
+
+        composable(Routes.GITHUB) {
+            com.openminis.app.ui.settings.GitHubSettingsScreen(
                 onBack = { navController.safePopBackStack() },
             )
         }

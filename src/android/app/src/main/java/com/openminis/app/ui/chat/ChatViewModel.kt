@@ -2520,6 +2520,14 @@ class ChatViewModel(
             // would reject.
             rosterNames = providerRepository.subAgents.map { it.name },
             userAskExposed = userAskExposedThisRun,
+            // [T-github-tools] Only when an account is signed in; the
+            // definitions name the writable repositories, so they are rebuilt
+            // from the stored grant each time rather than cached.
+            githubDefinitions = if (com.openminis.app.github.GitHubTools.isEnabled(context)) {
+                com.openminis.app.github.GitHubTools.definitions(context)
+            } else {
+                emptyList()
+            },
         )
 
     /**
@@ -14125,6 +14133,14 @@ class ChatViewModel(
         // — they always fall through to shell_execute or the offload
         // bridge, which is now where checkPermission runs.
         val toolTitle = try { JSONObject(argsJson).optString("tool_title", name) } catch (_: Exception) { name }
+
+        // [T-github-tools] Intercepted before the switch: every github_* call
+        // goes through GitHubTools, which checks the stored grant before any
+        // request is made. A call for a repository outside the grant is
+        // refused there, whatever the approval mode is.
+        if (com.openminis.app.github.GitHubTools.isGitHubTool(name)) {
+            return com.openminis.app.github.GitHubTools.execute(context, name, argsJson)
+        }
 
         return when (name) {
             FileReadTool.NAME -> {

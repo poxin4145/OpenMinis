@@ -610,5 +610,15 @@
                 android:resource="@xml/minis_accessibility_service" />
         </service>
 
+        <!-- [T-github-tools] OAuth App client id for GitHub device-code sign-in
+             (Settings › Agent Runtime › GitHub). Public value — no secret is
+             involved in the device flow. Empty until an OAuth App with Device
+             Flow enabled exists; the sign-in row then explains what is missing
+             instead of failing silently. Override from a build with
+             manifestPlaceholders["GITHUB_OAUTH_CLIENT_ID"] or edit here. -->
+        <meta-data
+            android:name="GitHubOAuthClientID"
+            android:value="${GITHUB_OAUTH_CLIENT_ID}" />
+
     </application>
 </manifest>

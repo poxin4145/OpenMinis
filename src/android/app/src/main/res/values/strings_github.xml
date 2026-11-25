@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Settings › Agent Runtime › GitHub -->
+    <string name="github_settings_title">GitHub</string>
+    <string name="github_settings_subtitle">Sign in and choose which repositories the agent may read or change</string>
+
+    <string name="github_sign_in">Sign in to GitHub</string>
+    <string name="github_sign_in_subtitle">Device-code sign-in: a short code appears here, you approve it on github.com. No token to paste.</string>
+    <string name="github_signed_in_as">Signed in · the agent acts as this account</string>
+    <string name="github_sign_out">Sign out</string>
+    <string name="github_account_footer">The token is stored sealed with a key held by the Android Keystore and never shown. Signing out deletes it; the repository permissions below are kept.</string>
+    <string name="github_setup_body">After signing in, pick which repositories the agent can reach. Nothing is reachable until you allow it: a repository outside this list does not exist for the GitHub tools.</string>
+
+    <string name="github_login_title">Sign in to GitHub</string>
+    <string name="github_login_instructions">Open github.com/login/device in a browser, enter this code, and approve the sign-in. This dialog closes by itself once GitHub confirms.</string>
+
+    <string name="github_scope">Repositories</string>
+    <string name="github_scope_whitelist">Only the ones I allow</string>
+    <string name="github_scope_all">All repositories of the account</string>
+    <string name="github_scope_footer">\"All repositories\" makes every repository readable; writing still has to be allowed per repository. \"Only the ones I allow\" hides everything that is not listed below.</string>
+
+    <string name="github_repositories">Repositories</string>
+    <string name="github_repos_footer_whitelist">Tap \"Read\" or \"Write\" to allow a repository. Use the search to find one that is not listed yet. Write means: commit on new branches and open pull requests, never directly to main.</string>
+    <string name="github_repos_footer_all">Everything the account can reach is readable. Tap \"Write\" to also allow commits and pull requests on that repository.</string>
+    <string name="github_repo_count">%1$d repositories</string>
+    <string name="github_loading">Loading…</string>
+    <string name="github_refresh">Refresh</string>
+    <string name="github_search">Search</string>
+    <string name="github_search_hint">owner/name or description</string>
+    <string name="github_no_repos">No repository matches. Refresh, or check that the account can see it.</string>
+
+    <string name="github_access_read">Read</string>
+    <string name="github_access_write">Write</string>
+    <string name="github_access_disabled">Off</string>
+    <string name="github_repo_private">Private</string>
+    <string name="github_repo_fork">Fork</string>
+    <string name="github_repo_pushed">Pushed %1$s</string>
+    <string name="github_repo_default_branch">Default branch %1$s</string>
+
+    <string name="github_disable_all_writes">Turn off all write access</string>
+    <string name="github_disable_all_writes_subtitle">Every repository goes back to read-only. Branches and pull requests already created stay.</string>
+</resources>

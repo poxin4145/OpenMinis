@@ -35,6 +35,7 @@ import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Extension
 import androidx.compose.material.icons.outlined.Feedback
 import androidx.compose.material.icons.outlined.Backup
+import androidx.compose.material.icons.outlined.CloudUpload
 import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.outlined.FolderShared
 import androidx.compose.material.icons.outlined.FrontHand
@@ -98,6 +99,9 @@ fun SettingsScreen(
     /** [T-p2-agent-settings] Settings › Agents (delegation on/off), below Memory. */
     onAgentsClick: () -> Unit = {},
     onAgentToolsClick: () -> Unit = {},
+    // [T-github-tools] Settings › Agent Runtime › GitHub: sign-in and the
+    // per-repository grant the GitHub tools enforce.
+    onGitHubClick: () -> Unit = {},
     // [T-mcp-integration-android] MCP Integrations page, listed directly below
     // Memory. Default no-op for callers that haven't wired the route yet.
     onMcpClick: () -> Unit = {},
@@ -214,6 +218,15 @@ fun SettingsScreen(
                     title = stringResource(R.string.settings_agents),
                     subtitle = stringResource(R.string.settings_agents_subtitle),
                     onClick = onAgentsClick,
+                )
+                // [T-github-tools] Right after the two capability rows: what
+                // the agent may reach on GitHub is a capability, not identity.
+                SettingsItem(
+                    icon = Icons.Outlined.CloudUpload,
+                    iconColor = Color(0xFF24292F),
+                    title = stringResource(R.string.github_settings_title),
+                    subtitle = stringResource(R.string.github_settings_subtitle),
+                    onClick = onGitHubClick,
                 )
                 SettingsItem(
                     icon = Icons.Outlined.Extension,

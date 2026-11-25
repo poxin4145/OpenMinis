@@ -56,6 +56,13 @@ android {
             "\"${customizationValue("ANTHROPIC_OAUTH_IDENTIFIER_PROMPT")}\""
         )
 
+        // [T-github-tools] OAuth App client id for GitHub device-code sign-in
+        // (Settings › Agent Runtime › GitHub). Public value, no secret; read
+        // from provider-customization.properties like the other build-time
+        // values so the public mirror compiles with it empty and the sign-in
+        // row explains what is missing at runtime.
+        manifestPlaceholders["GITHUB_OAUTH_CLIENT_ID"] = customizationValue("GITHUB_OAUTH_CLIENT_ID")
+
         // [T15-channels] In-app update. Every build and every update channel
         // checks GitHub Releases of this one repository: stable reads only
         // prerelease=false, beta also reads the prereleases, which are tagged

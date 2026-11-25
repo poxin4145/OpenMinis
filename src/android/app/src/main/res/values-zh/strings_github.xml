@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Settings › Agent Runtime › GitHub -->
+    <string name="github_settings_title">GitHub</string>
+    <string name="github_settings_subtitle">登录 GitHub，并指定 Agent 可以读取或修改哪些仓库</string>
+
+    <string name="github_sign_in">登录 GitHub</string>
+    <string name="github_sign_in_subtitle">设备码登录：这里显示一个短码，你在 github.com 上确认即可，不需要粘贴 token。</string>
+    <string name="github_signed_in_as">已登录 · Agent 以此账号身份操作</string>
+    <string name="github_sign_out">退出登录</string>
+    <string name="github_account_footer">token 使用 Android Keystore 中的密钥加密保存，不会显示。退出登录会删除它；下面的仓库权限会保留。</string>
+    <string name="github_setup_body">登录后，在这里选择 Agent 可以访问哪些仓库。在你允许之前，它什么都访问不到：不在此列表中的仓库，对 GitHub 工具来说等于不存在。</string>
+
+    <string name="github_login_title">登录 GitHub</string>
+    <string name="github_login_instructions">在浏览器打开 github.com/login/device，输入这个码并确认登录。GitHub 确认后，这个对话框会自动关闭。</string>
+
+    <string name="github_scope">仓库范围</string>
+    <string name="github_scope_whitelist">只允许我指定的</string>
+    <string name="github_scope_all">账号下的全部仓库</string>
+    <string name="github_scope_footer">「全部仓库」表示所有仓库都可读；写入仍然要逐个仓库单独允许。「只允许我指定的」会隐藏下面没有列出的所有仓库。</string>
+
+    <string name="github_repositories">仓库</string>
+    <string name="github_repos_footer_whitelist">点「只读」或「可写」来允许一个仓库；找不到的用搜索。「可写」指：在新分支上提交并发起 PR，永远不直接改 main。</string>
+    <string name="github_repos_footer_all">账号能访问的仓库全部可读。点「可写」来额外允许在该仓库提交和发起 PR。</string>
+    <string name="github_repo_count">%1$d 个仓库</string>
+    <string name="github_loading">加载中…</string>
+    <string name="github_refresh">刷新</string>
+    <string name="github_search">搜索</string>
+    <string name="github_search_hint">owner/name 或描述</string>
+    <string name="github_no_repos">没有匹配的仓库。刷新一下，或确认账号能看到它。</string>
+
+    <string name="github_access_read">只读</string>
+    <string name="github_access_write">可写</string>
+    <string name="github_access_disabled">关闭</string>
+    <string name="github_repo_private">私有</string>
+    <string name="github_repo_fork">Fork</string>
+    <string name="github_repo_pushed">推送于 %1$s</string>
+    <string name="github_repo_default_branch">默认分支 %1$s</string>
+
+    <string name="github_disable_all_writes">关闭全部写入权限</string>
+    <string name="github_disable_all_writes_subtitle">所有仓库恢复为只读。已经创建的分支和 PR 会保留。</string>
+</resources>

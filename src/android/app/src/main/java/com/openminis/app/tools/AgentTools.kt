@@ -50,6 +50,10 @@ object AgentTools {
         // not a sub agent, an interactive run). Not in the list = does not
         // exist: no schema, no prompt line, no retries on it. Last, as on iOS.
         userAskExposed: Boolean = false,
+        // [T-github-tools] Definitions for the signed-in GitHub account, built
+        // by the caller from the stored grant so the model is told which
+        // repositories are writable. Empty = no account, tool set absent.
+        githubDefinitions: List<AgentToolDefinition> = emptyList(),
     ): List<AgentToolDefinition> = buildList {
         add(shellExecuteDefinition())
         add(FileReadTool.definition())
@@ -67,6 +71,10 @@ object AgentTools {
             add(subAgentTaskDefinition(rosterNames))
         }
         if (userAskExposed && !isHelper) add(com.openminis.app.agent.userask.UserAskPromptText.definition())
+        // GitHub is offered to helpers too: a delegated task that needs to read
+        // a repository is a common reason to delegate. The grant is enforced
+        // per call in GitHubTools, so exposure alone grants nothing.
+        addAll(githubDefinitions)
     }
 
     /**
