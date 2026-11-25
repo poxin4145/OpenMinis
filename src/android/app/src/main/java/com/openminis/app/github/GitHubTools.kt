@@ -247,7 +247,7 @@ object GitHubTools {
         from: String?,
         title: String,
     ): ToolExecutionResult = blocked {
-        if (!is_validBranchName(branch)) {
+        if (!isValidBranchName(branch)) {
             return@blocked ToolExecutionResult(
                 "Refused: \"$branch\" is not a usable branch name.",
                 false,

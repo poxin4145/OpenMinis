@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CloudOff
-import androidx.compose.material.icons.filled.GitHub
+import androidx.compose.material.icons.filled.Code
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
@@ -113,7 +113,7 @@ fun GitHubSettingsScreen(onBack: () -> Unit) {
                 SettingsRow(
                     title = stringResource(R.string.github_sign_in),
                     subtitle = stringResource(R.string.github_sign_in_subtitle),
-                    icon = Icons.Default.GitHub,
+                    icon = Icons.Default.Code,
                     iconColor = GITHUB_COLOR,
                     onClick = {
                         loginError = null
@@ -153,7 +153,7 @@ fun GitHubSettingsScreen(onBack: () -> Unit) {
                 SettingsRow(
                     title = current.login,
                     subtitle = stringResource(R.string.github_signed_in_as),
-                    icon = Icons.Default.GitHub,
+                    icon = Icons.Default.Code,
                     iconColor = GITHUB_COLOR,
                     onClick = null,
                     trailing = {
