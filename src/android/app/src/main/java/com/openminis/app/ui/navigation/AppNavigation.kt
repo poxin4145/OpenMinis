@@ -1392,7 +1392,11 @@ fun AppNavigation(
                 androidx.navigation.navArgument("sessionId") {
                     type = androidx.navigation.NavType.StringType
                     nullable = true
-                     val context = androidx.compose.ui.platform.LocalContext.current
+                    defaultValue = null
+                },
+            ),
+        ) { backStackEntry ->
+            val context = androidx.compose.ui.platform.LocalContext.current
             val initCommand = backStackEntry.arguments?.getString("initCommand")
             val sessionId = backStackEntry.arguments?.getString("sessionId")
             val session = remember { TerminalSession(context.applicationContext) }
