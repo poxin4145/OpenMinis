@@ -127,8 +127,10 @@ class GitHubPolicyTest {
 
     @Test
     fun `visible drops disabled and keeps order`() {
-        val visible = GitHubPolicy.visible(whitelist, listOf("z/last", "me/other", "a/first", "me/open"))
-        assertEquals(listOf("a/first", "me/open"), visible.keys.toList())
+        val visible = GitHubPolicy.visible(whitelist, listOf("z/last", "me/other", "a/first", "me/open", "me/app"))
+        assertEquals(listOf("me/open", "me/app"), visible.keys.toList())
+        assertEquals(RepoAccess.READ, visible["me/open"])
+        assertEquals(RepoAccess.WRITE, visible["me/app"])
     }
 
     @Test
@@ -172,8 +174,27 @@ class GitHubPolicyTest {
             "github/Client.kt",
             "releases/notes.txt",
             "env.example",
+            "docs/github-actions-setup.md",
+            "github/Client.kt",
         )) {
             assertTrue("expected allowed for $path", GitHubPolicy.isPathAllowed(path))
+        }
+    }
+
+    @Test
+    fun `nested ci config is still blocked`() {
+        // A .github folder under a vendored or submodule path is still CI
+        // GitHub runs, and a keystore under app/ is still a keystore.
+        for (path in listOf(
+            "sub/lib/.github/workflows/deploy.yml",
+            "vendor/tool/.circleci/config.yml",
+            "app/keystore.properties",
+            "backend/.env",
+            "android/.gitlab-ci.yml",
+            ".travis.yml",
+            "Jenkinsfile",
+        )) {
+            assertFalse("expected refusal for $path", GitHubPolicy.isPathAllowed(path))
         }
     }
 

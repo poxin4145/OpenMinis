@@ -118,7 +118,7 @@ object GitHubTools {
     }
 
     /** Blocking bridge: the tool dispatcher is synchronous, the client is suspending. */
-    private fun <T> runBlocking(block: suspend kotlinx.coroutines.CoroutineScope.() -> T): T =
+    private fun <T> blocked(block: suspend kotlinx.coroutines.CoroutineScope.() -> T): T =
         kotlinx.coroutines.runBlocking { block(this) }
 
     // ------------------------------------------------------------------ //
@@ -126,11 +126,11 @@ object GitHubTools {
     // ------------------------------------------------------------------ //
 
     private fun listRepos(client: GitHubClient, token: String, rules: RepoRules, title: String): ToolExecutionResult =
-        runBlocking {
+        blocked {
             val repos = client.listRepos(token)
             val visible = GitHubPolicy.visible(rules, repos.map { it.fullName })
             if (visible.isEmpty()) {
-                return@runBlocking ToolExecutionResult(
+                return@blocked ToolExecutionResult(
                     "No repositories are enabled. The user can allow some under Settings › Agent Runtime › GitHub.",
                     true,
                     toolTitle = title,
@@ -165,7 +165,7 @@ object GitHubTools {
         ref: String?,
         args: JSONObject,
         title: String,
-    ): ToolExecutionResult = runBlocking {
+    ): ToolExecutionResult = blocked {
         val file = client.readFile(token, repo, path, ref)
         val offset = args.optInt("offset", 1).coerceAtLeast(1)
         val limit = args.optInt("limit", DEFAULT_READ_LINES).coerceIn(1, MAX_READ_LINES)
@@ -173,7 +173,7 @@ object GitHubTools {
         val lines = file.content.lines()
         val slice = lines.drop(offset - 1).take(limit)
         if (slice.isEmpty()) {
-            return@runBlocking ToolExecutionResult(
+            return@blocked ToolExecutionResult(
                 "(no lines at offset $offset; $repo/${file.path} has ${lines.size} lines)",
                 true,
                 toolTitle = title,
@@ -196,10 +196,10 @@ object GitHubTools {
         path: String,
         ref: String?,
         title: String,
-    ): ToolExecutionResult = runBlocking {
+    ): ToolExecutionResult = blocked {
         val entries = client.listDirectory(token, repo, path, ref)
         if (entries.isEmpty()) {
-            return@runBlocking ToolExecutionResult("(empty directory: $repo/${path.ifBlank { "/" }})", true, toolTitle = title)
+            return@blocked ToolExecutionResult("(empty directory: $repo/${path.ifBlank { "/" }})", true, toolTitle = title)
         }
         val body = entries.joinToString("\n") { e ->
             val kind = if (e.type == "dir") "d" else "-"
@@ -220,7 +220,7 @@ object GitHubTools {
         path: String,
         args: JSONObject,
         title: String,
-    ): ToolExecutionResult = runBlocking {
+    ): ToolExecutionResult = blocked {
         val content = args.optString("content")
         val message = args.optString("message").ifBlank { "Update ${path.trimStart('/')}" }
         val previous = client.readFileOrNull(token, repo, path, branch)
@@ -246,9 +246,9 @@ object GitHubTools {
         branch: String,
         from: String?,
         title: String,
-    ): ToolExecutionResult = runBlocking {
+    ): ToolExecutionResult = blocked {
         if (!is_validBranchName(branch)) {
-            return@runBlocking ToolExecutionResult(
+            return@blocked ToolExecutionResult(
                 "Refused: \"$branch\" is not a usable branch name.",
                 false,
                 toolTitle = title,
@@ -269,7 +269,7 @@ object GitHubTools {
         repo: String,
         args: JSONObject,
         title: String,
-    ): ToolExecutionResult = runBlocking {
+    ): ToolExecutionResult = blocked {
         val head = args.optString("head")
         val base = args.optString("base").ifBlank { "main" }
         val prTitle = args.optString("title").ifBlank { "Update from OpenMinis" }

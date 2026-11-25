@@ -129,19 +129,23 @@ object GitHubPolicy {
      * level. A write token plus one of these is a way to run code in CI or
      * to walk off with a signing key, which is not what "may edit project X"
      * was meant to hand out.
+     *
+     * Matched on any path SEGMENT, not only at the root: a `.github/` folder
+     * nested under a submodule or a vendored copy is still CI configuration
+     * GitHub will run, and a `keystore.properties` under `app/` is still a
+     * keystore.
      */
-    private val blockedPathPrefixes = listOf(
-        ".github/",
-        ".git/",
-        ".circleci/",
-        ".gitlab-ci",
+    private val blockedPathSegments = setOf(
+        ".github", ".git", ".circleci", ".gitlab-ci.yml", ".travis.yml",
+        "jenkinsfile", "azure-pipelines.yml", "bitbucket-pipelines.yml",
+        ".drone.yml", "appveyor.yml", "cloudbuild.yaml", "cloudbuild.yml",
     )
 
     private val blockedPathSuffixes = listOf(
         ".jks", ".keystore", ".p12", ".pfx", ".pem", ".key",
     )
 
-    private val blockedPathNames = listOf(
+    private val blockedPathNames = setOf(
         "keystore.properties", "secrets.xml", ".env", ".env.local", ".env.production",
         "google-services.json", "local.properties", "id_rsa", "id_ed25519",
     )
@@ -154,10 +158,11 @@ object GitHubPolicy {
     fun isPathAllowed(path: String): Boolean {
         val p = path.trim().replace('\\', '/').trimStart('/')
         if (p.isEmpty() || p.contains("..") || p.contains("//")) return false
-        val lower = p.lowercase()
-        if (blockedPathPrefixes.any { lower.startsWith(it) }) return false
-        if (blockedPathNames.any { lower == it || lower.endsWith("/$it") }) return false
-        if (blockedPathSuffixes.any { lower.endsWith(it) }) return false
+        val segments = p.split('/')
+        val lower = segments.map { it.lowercase() }
+        if (lower.any { it in blockedPathSegments }) return false
+        if (lower.any { it in blockedPathNames }) return false
+        if (lower.last().let { name -> blockedPathSuffixes.any { name.endsWith(it) } }) return false
         return true
     }
 
