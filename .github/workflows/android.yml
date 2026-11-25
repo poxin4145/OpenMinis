@@ -105,7 +105,13 @@ jobs:
         # The rest of the project's tests. Not what this branch is about, and
         # long enough that a slow or flaky case would hide the result above,
         # so a failure here is reported but does not fail the job.
+        #
+        # The step has its own ceiling: without one, a suite that overruns
+        # eats the job's 60-minute budget and the job is cancelled — which
+        # turns the branch red even though `continue-on-error` is set. A
+        # step timeout is a normal failure, so continue-on-error covers it.
         continue-on-error: true
+        timeout-minutes: 25
         working-directory: src/android
         run: ./gradlew :app:testGithubDebugUnitTest --no-daemon --stacktrace
 
