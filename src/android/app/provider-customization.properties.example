@@ -13,3 +13,10 @@
 # the same endpoint declare the same identifier, e.g.
 # https://github.com/Wei-Shaw/claude-relay-service
 ANTHROPIC_OAUTH_IDENTIFIER_PROMPT=
+
+# GitHub device-code sign-in (Settings › Agent Runtime › GitHub). The client
+# id of a GitHub OAuth App with "Enable Device Flow" ticked
+# (github.com/settings/developers → your app → Client ID). It is a public
+# value; no client secret is involved. Empty = the sign-in row explains that
+# the app is not configured, and the GitHub tools stay absent.
+GITHUB_OAUTH_CLIENT_ID=
