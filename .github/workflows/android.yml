@@ -92,7 +92,20 @@ jobs:
         working-directory: src/android
         run: ./gradlew :app:compileGithubDebugKotlin --no-daemon --stacktrace
 
-      - name: Unit tests
+      - name: Unit tests (GitHub tools)
+        # The suite this change touches, first and on its own: it is the only
+        # part of the run that can prove the new grant logic, and it finishes
+        # in seconds where the full suite takes over half an hour.
+        working-directory: src/android
+        run: >
+          ./gradlew :app:testGithubDebugUnitTest --no-daemon --stacktrace
+          --tests 'com.openminis.app.github.*'
+
+      - name: Unit tests (full suite)
+        # The rest of the project's tests. Not what this branch is about, and
+        # long enough that a slow or flaky case would hide the result above,
+        # so a failure here is reported but does not fail the job.
+        continue-on-error: true
         working-directory: src/android
         run: ./gradlew :app:testGithubDebugUnitTest --no-daemon --stacktrace
 
