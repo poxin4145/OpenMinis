@@ -83,23 +83,7 @@ jobs:
 
       - name: Report failing tests
         if: always()
-        run: |
-          # JUnit XML is where Gradle writes per-test results; surface the
-          # failures at the end of the log so they are not buried in output.
-          shopt -s nullglob
-          for f in src/android/app/build/test-results/testGithubDebugUnitTest/*.xml; do
-            python3 - "$f" <<'PY' || true
-import sys, xml.etree.ElementTree as ET
-t = ET.parse(sys.argv[1]).getroot()
-for tc in t.iter('testcase'):
-    for kind in ('failure', 'error'):
-        for node in tc.findall(kind):
-            msg = (node.get('message') or node.text or '').strip().splitlines()
-            print(f"FAILED {tc.get('classname')}.{tc.get('name')}: {msg[0] if msg else kind}")
-            for line in msg[1:8]:
-                print("   ", line)
-PY
-          done
+        run: python3 scripts/ci_print_test_failures.py 'src/android/app/build/test-results/testGithubDebugUnitTest/TEST-*.xml'
 
       - name: Upload test report
         if: always()
