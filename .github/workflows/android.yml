@@ -6,7 +6,7 @@ name: android
 # binaries (proot), the Alpine rootfs and the rclone binding are build
 # artefacts, not checked in. This workflow reproduces the documented steps on
 # a GitHub runner so a change can be verified without a local NDK + Go setup,
-# and a tag additionally publishes a debug APK.
+# and a tag additionally publishes the release-variant APK.
 #
 # Two jobs: `verify` compiles the Kotlin and runs the unit tests as soon as
 # the native inputs exist; `apk` only runs for tags and uploads the APK.
@@ -128,7 +128,7 @@ jobs:
           if-no-files-found: ignore
 
   apk:
-    name: Debug APK (tags only)
+    name: APK (tags only)
     if: startsWith(github.ref, 'refs/tags/v')
     needs: verify
     runs-on: ubuntu-24.04
@@ -166,17 +166,17 @@ jobs:
             'org.gradle.jvmargs=-Xmx6g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8' \
             'kotlin.daemon.jvmargs=-Xmx4g' >> src/android/gradle.properties
 
-      - name: Assemble debug APK
+      - name: Assemble APK
         working-directory: src/android
-        run: ./gradlew :app:assembleGithubDebug --no-daemon --stacktrace
+        run: ./gradlew :app:assembleGithubRelease --no-daemon --stacktrace
 
       - name: Rename with version and commit
         run: |
           VERSION=$(grep -oP 'versionName = "\K[^"]+' src/android/app/build.gradle.kts)
           SHA=${GITHUB_SHA::10}
           mkdir -p dist
-          for f in src/android/app/build/outputs/apk/github/debug/*.apk; do
-            cp "$f" "dist/OpenMinis-${VERSION}-${SHA}-debug.apk"
+          for f in src/android/app/build/outputs/apk/github/release/*.apk; do
+            cp "$f" "dist/OpenMinis-${VERSION}-${SHA}-apk"
           done
           ls -la dist
 
