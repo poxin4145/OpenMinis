@@ -27,7 +27,9 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  GRADLE_OPTS: -Dorg.gradle.jvmargs=-Xmx3g -Dorg.gradle.daemon=false
+  # Only the daemon switch: the heap sizes come from the "Raise compiler
+  # memory" step, which writes them into the checkout's gradle.properties.
+  GRADLE_OPTS: -Dorg.gradle.daemon=false
   ANDROID_API: 26
 
 jobs:
@@ -72,6 +74,19 @@ jobs:
           ./deps/build_rclone_android.sh
           mkdir -p src/android/app/libs
           cp deps/build/rclone/rclone.aar src/android/app/libs/
+
+      - name: Raise compiler memory
+        # The project ships org.gradle.jvmargs=-Xmx2048m and no Kotlin daemon
+        # size. ChatViewModel.kt alone is 1.1 MB, and the default Kotlin
+        # daemon dies with "Not enough memory to run compilation" on that.
+        # Nothing here is committed: this appends to the checkout's own
+        # gradle.properties, which only this job sees.
+        run: |
+          f=src/android/gradle.properties
+          printf '%s\n' \
+            'org.gradle.jvmargs=-Xmx6g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8' \
+            'kotlin.daemon.jvmargs=-Xmx4g' >> "$f"
+          cat "$f"
 
       - name: Compile Kotlin + resources
         working-directory: src/android
@@ -125,6 +140,12 @@ jobs:
           ./deps/build_rclone_android.sh
           mkdir -p src/android/app/libs
           cp deps/build/rclone/rclone.aar src/android/app/libs/
+
+      - name: Raise compiler memory
+        run: |
+          printf '%s\n' \
+            'org.gradle.jvmargs=-Xmx6g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8' \
+            'kotlin.daemon.jvmargs=-Xmx4g' >> src/android/gradle.properties
 
       - name: Assemble debug APK
         working-directory: src/android
