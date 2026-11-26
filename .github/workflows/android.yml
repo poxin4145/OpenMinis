@@ -96,6 +96,11 @@ jobs:
         # The suite this change touches, first and on its own: it is the only
         # part of the run that can prove the new grant logic, and it finishes
         # in seconds where the full suite takes over half an hour.
+        #
+        # Skipped on a tag: the tag points at a commit this workflow already
+        # verified on the branch push, and a tag build exists to produce the
+        # APK.
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         working-directory: src/android
         run: >
           ./gradlew :app:testGithubDebugUnitTest --no-daemon --stacktrace
@@ -110,6 +115,7 @@ jobs:
         # eats the job's 60-minute budget and the job is cancelled — which
         # turns the branch red even though `continue-on-error` is set. A
         # step timeout is a normal failure, so continue-on-error covers it.
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         continue-on-error: true
         timeout-minutes: 25
         working-directory: src/android
@@ -130,7 +136,6 @@ jobs:
   apk:
     name: APK (tags only)
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: verify
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     steps:
