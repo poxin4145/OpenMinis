@@ -134,8 +134,16 @@ jobs:
           if-no-files-found: ignore
 
   apk:
-    name: APK (tags only)
-    if: startsWith(github.ref, 'refs/tags/v')
+    name: APK
+    # Built on every push, not only on a tag: the artefact is the point of
+    # this workflow while the change is being tried out, and waiting for a
+    # tag would mean the branch cannot be installed to check it. A tag
+    # additionally publishes it as a release asset.
+    #
+    # contents: write only here, and only so the tag path can create the
+    # release; the verify job keeps the workflow-level read.
+    permissions:
+      contents: write
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     steps:
@@ -181,12 +189,28 @@ jobs:
           SHA=${GITHUB_SHA::10}
           mkdir -p dist
           for f in src/android/app/build/outputs/apk/github/release/*.apk; do
-            cp "$f" "dist/OpenMinis-${VERSION}-${SHA}-apk"
+            cp "$f" "dist/OpenMinis-${VERSION}-${SHA}.apk"
           done
           ls -la dist
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
         with:
+          # A fixed name: actions expressions have no replace(), and
+          # ref_name is feat/github-tools on a branch push, which an
+          # artifact name rejects. The file inside carries version and sha.
           name: apk
           path: dist/*.apk
           if-no-files-found: error
+
+      - name: Publish release asset (tags only)
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" \
+            --title "OpenMinis $TAG" \
+            --notes "GitHub sign-in and per-repository agent access on Android." \
+            --prerelease
+          gh release upload "$TAG" dist/*.apk --clobber
