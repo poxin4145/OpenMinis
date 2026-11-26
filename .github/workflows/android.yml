@@ -22,9 +22,12 @@ on:
 permissions:
   contents: read
 
+# No cancel-in-progress: an APK build takes ~40 minutes and the branch is
+# pushed to repeatedly while it is being worked on, so cancelling on every
+# push meant no build ever finished. Runs queue instead, and the newest one
+# is the one whose artifact matters.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
 
 env:
   # Only the daemon switch: the heap sizes come from the "Raise compiler
